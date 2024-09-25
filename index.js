@@ -1,9 +1,10 @@
 require ('dotenv').config();
 
 const { Bot, GrammyError, HttpError, InlineKeyboard, InputFile  } =require('grammy');
-const {hydrate} = require('@grammyjs/hydrate')
+const { hydrate } = require('@grammyjs/hydrate');
 const bot = new Bot(process.env.BOT_api_KEY);
-bot.use(hydrate())
+bot.use(hydrate());
+
 
 bot.api.setMyCommands([
   {
@@ -15,19 +16,21 @@ bot.api.setMyCommands([
 bot.command('start', async (ctx) => { 
   await ctx.reply('Приветик) Меня зову Greis, очень рада тебя видеть! Нажми на "mood" и в ответ на это я покажу тебе что умею делать. Обещаю это будет очень интересно');
 });
+const inlineKeyboard = new InlineKeyboard()
+.text('Расклады 🎴','Расклады').row()
+.text('Свечи🕯','свечи').row()
+.text('Карта дня🌄','Карта дня').row()
+.text('Ещё🧷','Ещё').row()
+.text('Вопрос🤷‍♀️','вопрос').row()
+
 bot.command('mood', async (ctx)=>{
-    const inlineKeyboard = new InlineKeyboard()
-    .text('Расклады 🎴','Расклады').row()
-    .text('Свечи🕯','свечи').row()
-    .text('Карта дня🌄','Карта дня').row()
-    .text('Ещё🧷','Ещё').row()
-    .text('Вопрос🤷‍♀️','Анонимный вопрос')
-    await ctx.reply('Список услуг указан у тебя на клавиатуре🕊',{
+  await ctx.reply('Список услуг указан у тебя на клавиатуре🕊',{
     reply_markup: inlineKeyboard
-    })
+  })
 })
 
 bot.callbackQuery('Карта дня', async (ctx) =>{
+ await ctx.answerCallbackQuery()
  await ctx.reply('Перемешиваю колоду и вытасикваю карту 💌')
  const picture =[
   '-5298703438454055103_121.jpg',
@@ -99,65 +102,138 @@ bot.callbackQuery('Карта дня', async (ctx) =>{
   let randomInt = getRandomInt1(0, 18)
   await ctx.reply('Твоя карта дня:')
   await ctx.replyWithPhoto(new InputFile(picture[randomInt]))
-  await ctx.answerCallbackQuery('Вы получили карту дня💞')
+  await ctx.answerCallbackQuery('Достаю карту💞')
 })
 
 bot.callbackQuery('Расклады', async (ctx)=>{ 
-  await ctx.reply('Интерсеные схемы раскладов и другие мои услуги можно посмотреть здесь👇')
-  await ctx.reply("https://t.me/taroshatycen")
+  await ctx.answerCallbackQuery()
+  const link = new InlineKeyboard().url('Перейти к раскладам','https://t.me/GREISshoh')
+  await ctx.reply('Интересующие тебя схемы раскладов и другие мои услуги можно посмотреть здесь👇',{
+    reply_markup: link
+  })
   const inlineKeyboard = new InlineKeyboard()
   .text('Да','Да').row() 
   .text('Нет','Нет').row()
   await ctx.reply('💕Нашла(шёл) то что искал(а)?',{
   reply_markup: inlineKeyboard
-})
+}) 
   })
 
 bot.callbackQuery('свечи', async (ctx)=>{
-  await ctx.reply('Програмные свечи' )
-  await ctx.reply('https://t.me/taroshatycen/59')
+  await ctx.answerCallbackQuery()
+  const link2 = new InlineKeyboard().url('Перейти к свечам','https://t.me/GREISshoh/59')
+  await ctx.reply('Програмные свечи',{
+    reply_markup: link2
+  } )
 })
  
 bot.callbackQuery('Да', async (ctx)=>{
-  await ctx.reply('Рада что смогла вам помочь')
+  const menu =new InlineKeyboard()
+  .text('Назад к услугам','Возврат')
+  await ctx.answerCallbackQuery()
+  await ctx.callbackQuery.message.editText('Рада что смогла вам помочь',{
+    reply_markup: menu
+  })
+})
+bot.callbackQuery('Возврат',async (ctx) => {
+  await ctx.callbackQuery.message.editText('Список услуг указан у тебя на клавиатуре🕊',{
+    reply_markup:inlineKeyboard
+  })
 })
 bot.callbackQuery('Нет', async (ctx)=>{
-  await ctx.reply('Если не нашёл(a) нужный тебе расклад не расстраивайся)Напиши мне и я тебе помогу👇')
-  await ctx.reply('@ia_nikochka')
+  await ctx.answerCallbackQuery()
+  const me = new InlineKeyboard().url('Вперёд за раскладом)','https://t.me/ia_nikochka')
+  await ctx.callbackQuery.message.editText('Если не нашёл(a) нужный тебе расклад не расстраивайся)Напиши мне и я тебе помогу👇',{
+    reply_markup: me
+  })
 })
+
 bot.callbackQuery('Ещё', async (ctx)=>{
-  const moreKeyboard = new  InlineKeyboard().text('Да :)').row().text('Нет:(')
-  await ctx.reply("Так же у меня есть собственный курс по тарологии.Хотите узнать подробнее?",{
-    reply_markup: moreKeyboard
+  const course = new InlineKeyboard() .text('Да:)','Да:)')
+ .text('Нет:(','Нет:(')
+  await ctx.reply("Так же у меня есть собственный курс по таро.Хотите узнать подробнее?",{
+    reply_markup: course
+  })
+  await ctx.answerCallbackQuery()
+})
+const backkeyboard= new InlineKeyboard()
+     .text('Далее','Далее1');
+const backkeyboard1= new InlineKeyboard()
+     .text('Далее','Далее2');
+const backkeyboard2= new InlineKeyboard()
+     .text('Далее','Далее3');
+const backkeyboard3= new InlineKeyboard()
+     .text('Далее','Далее4');
+const course2 = new InlineKeyboard()
+    .text('К курсу','Далее5')
+    .text('Пока не готов(а)','Назад')
+
+    bot.callbackQuery('Да:)', async (ctx) => {
+      await ctx.callbackQuery.message.editText('Прекрасно, перед переходом к самому курсу у меня есть для тебя несколько интересных фактов о Таро', {
+        reply_markup: backkeyboard,
+      })
+      await ctx.answerCallbackQuery()
+    })
+    bot.callbackQuery('Далее1', async (ctx) => {
+      await ctx.callbackQuery.message.editText(
+        '1. Таро -<span class="tg-spoiler"> самостоятельный эгрегор, который не связывает тебя с поклонением богам, сатане или бесам &#128720;, все это миф.</span> Ты можешь быть христианином или мусульманином, все это вообще никак не мешает заниматься таро и наказания за это тоже не будет!',
+        {
+          parse_mode: "HTML",
+          reply_markup: backkeyboard1,
+        }
+      );
+      await ctx.answerCallbackQuery();
+    });
+  bot.callbackQuery('Далее2',async (ctx)=>{
+  await ctx.callbackQuery.message.editText('2. Заниматься этим может каждый, не нужно таланта и БАБКИНОГО ДАРА, хватит желания и искреннего интереса',{
+    reply_markup: backkeyboard2,
+    })
+  await ctx.answerCallbackQuery()
+  })
+  bot.callbackQuery('Далее3',async (ctx)=>{
+    await ctx.callbackQuery.message.editText("3. А ты знала, что можно увидеть в таро, что за тобой следят в социальных сетях?Например, карта «Луна» может указывать на шпионаж или даже попытки взлома аккаунта, иногда это может доходить и до провокаций со сливом фоток",{
+      reply_markup: backkeyboard3,
+    })
+    await ctx.answerCallbackQuery()
+    })
+  bot.callbackQuery('Далее4',async (ctx)=>{
+    await ctx.callbackQuery.message.editText("4. А ещё, можно узнать о &#128286 желаниях человека. Некоторые дошли даже до определения размеров $ через таро, ахаха. А вот карта «8 мечей» может говорить о том, что человек имеет нестандартные предпочтения, фиксацию, доминацию над ним или даже садомазохистские наклонности. Кто вообще ожидал такого от масти мечей?",{
+      reply_markup: course2,
+      parse_mode:'HTML'
+    })
+    await ctx.answerCallbackQuery()
+})
+bot.callbackQuery('Назад', async (ctx) =>{
+  await ctx.callbackQuery.message.editText('Список услуг указан у тебя на клавиатуре🕊',{
+    reply_markup: inlineKeyboard
+    })
+  await ctx.answerCallbackQuery()
+  })
+bot.callbackQuery('Нет:(', async (ctx) => {
+  await ctx.answerCallbackQuery()
+  await ctx.reply('Хорошо, но если захочешь обучиться магии вне хогвартса то всегда рада буду видеть тебя в наших рядах');
+});
+bot.callbackQuery('Далее5',async (ctx)=>{
+  await ctx.answerCallbackQuery()
+  const money = new InlineKeyboard().url('К курсу', 'https://t.me/GREISshoh/60')
+  await ctx.reply('&#128302Вперёд за знаниями&#128302',{
+    reply_markup: money,
+    parse_mode:"HTML"
+   
   })
 })
-bot.on('callback_query:data', async (ctx)=>{
-  
-  if(ctx.callbackQuery.data==='Да :)') {
-    
-    await ctx.answerCallbackQuery('Рада что вас заинтерисовало')
-    await ctx.reply( "Прекрасно перед переходом к самому курсу у меня есть для тебя несколько интересных фактов о Таро"),
-    await ctx.reply('1. Таро - самостоятельный эгрегор, <span class="tg-spoiler">который не связывает тебя с поклонением богам, сатане или бесам, все это миф. Ты можешь быть христианином или мусульманином, все это вообще никак не мешает заниматься таро и наказания за это тоже не будет!</span>',{
-    parse_mode : "HTML"
-  })
-    await ctx.reply("2. Заниматься этим может каждый, не нужно таланта и БАБКИНОГО ДАРА, хватит желания и искреннего интереса")
-    await ctx.reply("3. А ты знала, что можно увидеть в таро, что за тобой следят в социальных сетях?Например, карта «Луна» может указывать на шпионаж или даже попытки взлома аккаунта, иногда это может доходить и до провокаций со сливом фоток")
-    await ctx.reply("4. А ещё, можно узнать о 18+ желаниях человека. Некоторые дошли даже до определения размеров $ через таро, ахаха. А вот карта «8 мечей» может говорить о том, что человек имеет нестандартные предпочтения, фиксацию, доминацию над ним или даже садомазохистские наклонности. Кто вообще ожидал такого от масти мечей?")
-
-  }
-
-})
-bot.callbackQuery('Анонимный вопрос', async (ctx)=>{
-  await ctx.reply('Напишите сообщение которое начниается с "Хочу задать вопрос:" и задайте свой вопрос а я отвечу на него у себя в канале')
-})
-bot.hears(/Хочу задать вопрос:/, async (ctx)=>{
-    const message = ctx.message.text
-    await bot.api.sendMessage(1124382364,message)
-    await ctx.reply('Ваш вопрос записан.Спасибо за вопрос ответ ждите в моём телеграмм канале @ia_nikochka')
-}) 
-bot.callbackQuery('Нет:(', async (ctx) =>{
-  await ctx.reply('Хорошо, но если захочешь я всегда готова помочь')
-})
+bot.callbackQuery('вопрос', async (ctx) => {
+  await ctx.reply('Напишите свой вопрос)');
+  ctx.waitForMessage = true;
+  });
+  bot.on('message', async (ctx) => {
+    if (ctx.waitForMessage = true) {
+      const messageText = ctx.message.text;
+      bot.api.sendMessage(1124382364, messageText);
+      await ctx.reply('Твой ответ записан жди ответ в моём канале')
+      ctx.waitForMessage = false
+    }
+  });
 bot.catch((err)=>{
   const ctx = err.ctx;
   console.error(`Error while handling update ${ctx.update.update_id}:`); 
@@ -169,6 +245,6 @@ bot.catch((err)=>{
   } else {
     console.error("Unknow error", e);
   }
-});
+})
 
 bot.start();
