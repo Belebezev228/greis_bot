@@ -233,6 +233,9 @@ bot.callbackQuery('вопрос', async (ctx) => {
       await ctx.reply('Твой ответ записан жди ответ в моём канале')
       ctx.waitForMessage = false
     }
+    else{
+      await ctx.reply('Для взаимодествия с ботом воспользуйтесь кнопками)')
+    }
   });
 bot.catch((err)=>{
   const ctx = err.ctx;
@@ -245,8 +248,5 @@ bot.catch((err)=>{
   } else {
     console.error("Unknow error", e);
   }
-})
-bot.on(message,async (ctx)=>{
-  await ctx.reply('Для взаимодествия с ботом воспользуйтесь кнопками)')
 })
 bot.start();
