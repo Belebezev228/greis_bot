@@ -246,5 +246,7 @@ bot.catch((err)=>{
     console.error("Unknow error", e);
   }
 })
-
+bot.on(message,async (ctx)=>{
+  await ctx.reply('Для взаимодествия с ботом воспользуйтесь кнопками)')
+})
 bot.start();
