@@ -226,7 +226,7 @@ bot.callbackQuery('вопрос', async (ctx) => {
   await ctx.reply('Напишите свой вопрос)');
   ctx.waitForMessage = true;
   });
-  bot.on('message', async (ctx) => {
+bot.on('message', async (ctx) => {
     if (ctx.waitForMessage = true) {
       const messageText = ctx.message.text;
       bot.api.sendMessage(1124382364, messageText);
