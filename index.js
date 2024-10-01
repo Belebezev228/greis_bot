@@ -222,18 +222,18 @@ bot.callbackQuery('Далее5',async (ctx)=>{
    
   })
 })
+let waitMessage = false
 bot.callbackQuery('вопрос', async (ctx) => {
   await ctx.reply('Напишите свой вопрос)');
-  ctx.waitForMessage = true;
+  waitMessage = true;
   });
 bot.on('message', async (ctx) => {
-    if (ctx.waitForMessage = true) {
+    if (waitMessage == true) {
       const messageText = ctx.message.text;
       bot.api.sendMessage(1124382364, messageText);
       await ctx.reply('Твой ответ записан жди ответ в моём канале')
-      ctx.waitForMessage = false
-    }
-    else{
+      waitMessage = false;
+    }else{
       await ctx.reply('Для взаимодествия с ботом воспользуйтесь кнопками)')
     }
   });
